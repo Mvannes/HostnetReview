@@ -36,10 +36,10 @@ for(i in pages_to_fetch) {
   
   review <- html_nodes(page, "#ervaringen .widget-content .row .l-col-8") %>% html_text()
   
-  # Dit dealt nu niet met een lege author omdat dan de meta-author tag niet bestaat.
-  reviewer <- html_nodes(page, '#ervaringen .meta-author') %>% 
+  reviewer <- html_nodes(page, '#ervaringen .comment-meta') %>%
     html_text() %>%
     tolower() %>% 
+    gsub("[a-z]* \\d* [a-z]* \\d*", "", .) %>%
     trimws()
   
   score <- html_nodes(page, "#ervaringen .widget-content .star_rating_container .star_rating_group") 
