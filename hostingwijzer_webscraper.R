@@ -24,20 +24,18 @@ all_reviews <- data.frame(Date=c(), Package=c(), Review=c())
 for(i in pages_to_fetch) {
   page <- read_html(paste(base_url, i, sep=""))
 
-  hosting_package <- html_nodes(page, ".providerreview dd a") %>% html_text() %>%
-    gsub('Hostnet anders', 'Anders', .) %>%
-    gsub('Hostnet Start', 'Webhosting Start', .) %>% 
-    gsub('Hostnet Pro', 'Webhosting Pro', .) %>%
-    gsub('Hostnet Plus', 'Webhosting Plus', .)
-
   date <- html_nodes(page, ".providerreview .date") %>% html_text()
 
   review <- html_nodes(page, ".providerreview p") %>% html_text()
-  score <<- html_nodes(page, ".providerreview .dl-horizontal span") %>%
+  reviewer <- html_nodes(page, '.providerreview span[itemprop="author"]') %>% 
+    html_text() %>%
+    tolower()
+  
+  score  <- html_nodes(page, ".providerreview .dl-horizontal span") %>%
     html_text() %>%
     gsub(",", ".", .) %>%
     as.numeric()
-
+  
   support_elements <- seq(1, length(score), by = 4)
   support_score <-score[support_elements]
 
@@ -52,12 +50,12 @@ for(i in pages_to_fetch) {
 
   page_reviews <- data.frame(
     Date=date,
-    Package=hosting_package,
     Review=review,
-    SupportScore=support_score,
-    QualityScore=quality_score,
-    PriceScore=price_score,
-    GeneralScore=general_score
+    Reviewer=reviewer,
+    SupportScore=rescale(support_score, to=c(0,100)),
+    QualityScore=rescale(quality_score, to=c(0,100)),
+    PriceScore=rescale(price_score, to=c(0,100)),
+    GeneralScore=rescale(general_score, to=c(0,100))
   )
 
   all_reviews <- rbind(all_reviews, page_reviews)
