@@ -22,7 +22,7 @@ per_page <- 10
 star_count <- 5
 
 # Always round up because there is no such thing as half a page.
-pages_to_fetch <- 1:ceiling(total_pages / per_page)
+pages_to_fetch <- 1:ceiling(total_pages)
 
 all_reviews <- data.frame(Date=c(), Package=c(), Review=c())
 
@@ -53,9 +53,15 @@ for(i in pages_to_fetch) {
     data.frame(Stars=.)
   agg$Group <- rep(1:(nrow(agg)/star_count), each=star_count)
   agg$StarAsNumber <- -1
-  agg[agg$Stars == "fa fa-star", ]$StarAsNumber <- 1
-  agg[agg$Stars == "fa fa-star-half-o", ]$StarAsNumber <- 0.5
-  agg[agg$Stars == "fa fa-star-o", ]$StarAsNumber <- 0
+  if(nrow(agg[agg$Stars == "fa fa-star", ]) > 0) {
+    agg[agg$Stars == "fa fa-star", ]$StarAsNumber <- 1
+  }
+  if(nrow(agg[agg$Stars == "fa fa-star-half-o", ]) > 0) {
+    agg[agg$Stars == "fa fa-star-half-o", ]$StarAsNumber <- 0.5
+  }
+  if(nrow(agg[agg$Stars == "fa fa-star-o", ]) > 0) {
+    agg[agg$Stars == "fa fa-star-o", ]$StarAsNumber <- 0
+  }
   price_score <- aggregate(StarAsNumber ~ Group, agg, sum)$StarAsNumber
   
   quality_elements <- seq(2, length(score), by = 3)
@@ -65,9 +71,15 @@ for(i in pages_to_fetch) {
     data.frame(Stars=.)
   agg$Group <- rep(1:(nrow(agg)/star_count), each=star_count)
   agg$StarAsNumber <- -1
-  agg[agg$Stars == "fa fa-star", ]$StarAsNumber <- 1
-  agg[agg$Stars == "fa fa-star-half-o", ]$StarAsNumber <- 0.5
-  agg[agg$Stars == "fa fa-star-o", ]$StarAsNumber <- 0
+  if(nrow(agg[agg$Stars == "fa fa-star", ]) > 0) {
+    agg[agg$Stars == "fa fa-star", ]$StarAsNumber <- 1
+  }
+  if(nrow(agg[agg$Stars == "fa fa-star-half-o", ]) > 0) {
+    agg[agg$Stars == "fa fa-star-half-o", ]$StarAsNumber <- 0.5
+  }
+  if(nrow(agg[agg$Stars == "fa fa-star-o", ]) > 0) {
+    agg[agg$Stars == "fa fa-star-o", ]$StarAsNumber <- 0
+  }
   quality_score <- aggregate(StarAsNumber ~ Group, agg, sum)$StarAsNumber
   
   support_elements <- seq(3, length(score), by = 3)
@@ -77,9 +89,15 @@ for(i in pages_to_fetch) {
     data.frame(Stars=.)
   agg$Group <- rep(1:(nrow(agg)/star_count), each=star_count)
   agg$StarAsNumber <- -1
-  agg[agg$Stars == "fa fa-star", ]$StarAsNumber <- 1
-  agg[agg$Stars == "fa fa-star-half-o", ]$StarAsNumber <- 0.5
-  agg[agg$Stars == "fa fa-star-o", ]$StarAsNumber <- 0
+  if(nrow(agg[agg$Stars == "fa fa-star", ]) > 0) {
+    agg[agg$Stars == "fa fa-star", ]$StarAsNumber <- 1
+  }
+  if(nrow(agg[agg$Stars == "fa fa-star-half-o", ]) > 0) {
+    agg[agg$Stars == "fa fa-star-half-o", ]$StarAsNumber <- 0.5
+  }
+  if(nrow(agg[agg$Stars == "fa fa-star-o", ]) > 0) {
+    agg[agg$Stars == "fa fa-star-o", ]$StarAsNumber <- 0
+  }
   support_score <- aggregate(StarAsNumber ~ Group, agg, sum)$StarAsNumber
 
   page_reviews <- data.frame(
