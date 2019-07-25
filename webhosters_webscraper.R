@@ -133,4 +133,7 @@ all_reviews$Date <- all_reviews$Date %>%
   gsub(" december ", "-12-", .) %>%
   as.Date(format="%d-%m-%Y ")
 
+
+all_reviews <- all_reviews %>% arrange(Date)
+all_reviews$cumulativeAverageScore <- cummean(all_reviews$AverageScore)
 all_reviews$Origin <- 'Webhosters'

@@ -55,4 +55,7 @@ rm(page)
 
 all_reviews$AverageScore <- rescale(all_reviews$AverageScore, to=c(0,100))
 all_reviews$AverageScoreStars <- rescale(all_reviews$AverageScoreStars, to=c(0,100))
+all_reviews <- all_reviews %>% arrange(Date)
+all_reviews$cumulativeAverageScore <- cummean(all_reviews$AverageScore)
+
 all_reviews$Origin <- 'Kiyoh'

@@ -11,11 +11,12 @@ library(lubridate)
 library(reshape2)
 
 source("utility.R")
-
+all_reviews <- all_reviews %>% arrange(Date)
+all_reviews$cumScore <- cummean(all_reviews$Score)
 grouped <- all_reviews %>% 
   group_by(month=floor_date(Date, "month")) %>% 
   summarise(
-    average=mean(Score),
+    average=mean(cumScore),
     averageStars=mean(ScoreStars),
     amount= n()
   )
