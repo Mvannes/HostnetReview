@@ -1,4 +1,5 @@
 library(rvest)
+library(scales)
 base_url <- "http://www.hostingwijzer.nl/kieswijzer/providers/hostnet/reviews/?page="
 
 first_page <- "1"
@@ -52,16 +53,21 @@ for(i in pages_to_fetch) {
     Date=date,
     Review=review,
     Reviewer=reviewer,
-    SupportScore=rescale(support_score, to=c(0,100)),
-    QualityScore=rescale(quality_score, to=c(0,100)),
-    PriceScore=rescale(price_score, to=c(0,100)),
-    GeneralScore=rescale(general_score, to=c(0,100))
+    SupportScore=support_score,
+    QualityScore=quality_score,
+    PriceScore=price_score,
+    GeneralScore=general_score
   )
 
   all_reviews <- rbind(all_reviews, page_reviews)
   # Removing the variable also properly closes the connection.
   rm(page)
 }
+all_reviews$SupportScore <- rescale(all_reviews$SupportScore, to=c(0,100))
+all_reviews$QualityScore <- rescale(all_reviews$QualityScore, to=c(0,100))
+all_reviews$PriceScore <- rescale(all_reviews$PriceScore, to=c(0,100))
+all_reviews$GeneralScore <- rescale(all_reviews$GeneralScore, to=c(0,100))
+all_reviews %>% mutate(AverageScore = (SupportScore + QualityScore + PriceScore + GeneralScore) / 4)
 
 # move this and do it more nicely than current gsub mess.  
 all_reviews$Date <- all_reviews$Date %>% 
@@ -78,3 +84,5 @@ all_reviews$Date <- all_reviews$Date %>%
   gsub(" november ", "-11-", .) %>%
   gsub(" december ", "-12-", .) %>%
   as.Date(format="%d-%m-%Y ")
+
+all_reviews$Origin <- 'HostingWijzer'

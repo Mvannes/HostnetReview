@@ -43,9 +43,7 @@ for(i in pages_to_fetch) {
     trimws()
   
   score <- html_nodes(page, "#ervaringen .widget-content .star_rating_container .star_rating_group") 
-  
-  
-  
+
   price_elements <- seq(1, length(score), by = 3)
   price_score <- score[price_elements]
   agg <- html_nodes(price_score, '.fa') %>% 
@@ -103,16 +101,21 @@ for(i in pages_to_fetch) {
   page_reviews <- data.frame(
     Date=date,
     Review=review,
-    SupportScore=rescale(support_score, to=c(0,100)),
-    QualityScore=rescale(quality_score, to=c(0,100)),
-    PriceScore=rescale(price_score, to=c(0,100))
+    Reviewer=reviewer,
+    SupportScore=support_score,
+    QualityScore=quality_score,
+    PriceScore=price_score
   )
-  page_reviews %>% mutate(GeneralScore = (SupportScore + QualityScore + PriceScore) / 3)
   
   all_reviews <- rbind(all_reviews, page_reviews)
   # Removing the variable also properly closes the connection.
   rm(page)
 }
+
+all_reviews$SupportScore <- rescale(all_reviews$SupportScore, to=c(0,100))
+all_reviews$QualityScore <- rescale(all_reviews$QualityScore, to=c(0,100))
+all_reviews$PriceScore <- rescale(all_reviews$PriceScore, to=c(0,100))
+all_reviews %>% mutate(AverageScore = (SupportScore + QualityScore + PriceScore) / 3)
 
 # move this and do it more nicely than current gsub mess.  
 all_reviews$Date <- all_reviews$Date %>% 
@@ -129,3 +132,5 @@ all_reviews$Date <- all_reviews$Date %>%
   gsub(" november ", "-11-", .) %>%
   gsub(" december ", "-12-", .) %>%
   as.Date(format="%d-%m-%Y ")
+
+all_reviews$Origin <- 'Webhosters'
