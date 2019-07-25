@@ -67,7 +67,7 @@ all_reviews$SupportScore <- rescale(all_reviews$SupportScore, to=c(0,100))
 all_reviews$QualityScore <- rescale(all_reviews$QualityScore, to=c(0,100))
 all_reviews$PriceScore <- rescale(all_reviews$PriceScore, to=c(0,100))
 all_reviews$GeneralScore <- rescale(all_reviews$GeneralScore, to=c(0,100))
-all_reviews %>% mutate(AverageScore = (SupportScore + QualityScore + PriceScore + GeneralScore) / 4)
+all_reviews <- all_reviews %>% mutate(AverageScore = (SupportScore + QualityScore + PriceScore + GeneralScore) / 4)
 
 # move this and do it more nicely than current gsub mess.  
 all_reviews$Date <- all_reviews$Date %>% 
@@ -86,5 +86,8 @@ all_reviews$Date <- all_reviews$Date %>%
   as.Date(format="%d-%m-%Y ")
 
 all_reviews <- all_reviews %>% arrange(Date)
-all_reviews$cumulativeAverageScore <- cummean(all_reviews$AverageScore)
+all_reviews$CumulativeAverageScore <- cummean(all_reviews$AverageScore)
+all_reviews$CumulativeAmount <- 1:nrow(all_reviews)
 all_reviews$Origin <- 'HostingWijzer'
+
+hosting_reviews <- all_reviews

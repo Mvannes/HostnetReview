@@ -11,19 +11,26 @@ library(lubridate)
 library(reshape2)
 
 source("utility.R")
+
+all_reviews <- hosting_reviews %>% select(Date, AverageScore, cumulativeAverageScore, Origin, amount)
+
+all_reviews <- rbind(all_reviews, select(webhosting_reviews, Date, AverageScore, cumulativeAverageScore, Origin, amount))
+all_reviews <- rbind(all_reviews, select(kiyoh_reviews, Date, AverageScore, cumulativeAverageScore, Origin, amount))
+
 all_reviews <- all_reviews %>% arrange(Date)
-all_reviews$cumScore <- cummean(all_reviews$Score)
+all_reviews$AllCumAverage <- cummean(all_reviews$AverageScore)
+all_reviews$AllAmount <- 1:nrow(all_reviews)
+
+
 grouped <- all_reviews %>% 
-  group_by(month=floor_date(Date, "month")) %>% 
+  group_by(month=floor_date(Date, "month"), Origin) %>% 
   summarise(
-    average=mean(cumScore),
-    averageStars=mean(ScoreStars),
-    amount= n()
+    average=mean(cumulativeAverageScore),
+    amount= last(amount)
   )
 
-ggplot(melt(grouped, id.vars = 'month') %>% filter(month > as.Date('2018-01-31')), aes(x = month, y = value, color=variable)) +
+ggplot(grouped %>% filter(month > as.Date('2017-12-31')), aes(x = month, y = amount, color=Origin)) +
   geom_line(stat="identity", alpha=0.30) +
-  # geom_histogram(bins = length(unique(chat.data.text$DateTimes))) +
   ylab("Score") +
   xlab("Time") +
   scale_x_date(breaks=date_breaks("1 month"), labels=date_format("%b %Y")) +

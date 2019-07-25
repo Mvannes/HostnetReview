@@ -115,7 +115,7 @@ for(i in pages_to_fetch) {
 all_reviews$SupportScore <- rescale(all_reviews$SupportScore, to=c(0,100))
 all_reviews$QualityScore <- rescale(all_reviews$QualityScore, to=c(0,100))
 all_reviews$PriceScore <- rescale(all_reviews$PriceScore, to=c(0,100))
-all_reviews %>% mutate(AverageScore = (SupportScore + QualityScore + PriceScore) / 3)
+all_reviews <- all_reviews %>% mutate(AverageScore = (SupportScore + QualityScore + PriceScore) / 3)
 
 # move this and do it more nicely than current gsub mess.  
 all_reviews$Date <- all_reviews$Date %>% 
@@ -135,5 +135,8 @@ all_reviews$Date <- all_reviews$Date %>%
 
 
 all_reviews <- all_reviews %>% arrange(Date)
-all_reviews$cumulativeAverageScore <- cummean(all_reviews$AverageScore)
+all_reviews$CumulativeAverageScore <- cummean(all_reviews$AverageScore)
+all_reviews$CumulativeAmount <- 1:nrow(all_reviews)
 all_reviews$Origin <- 'Webhosters'
+
+webhosting_reviews <- all_reviews
