@@ -88,6 +88,6 @@ all_reviews$Date <- all_reviews$Date %>%
 all_reviews <- all_reviews %>% arrange(Date)
 all_reviews$CumulativeAverageScore <- cummean(all_reviews$AverageScore)
 all_reviews$CumulativeAmount <- 1:nrow(all_reviews)
-all_reviews$Origin <- 'HostingWijzer'
+all_reviews$Origin <- 'hostnet'
 
-hosting_reviews <- all_reviews
+hosting_reviews_hos <- all_reviews

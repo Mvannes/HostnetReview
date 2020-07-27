@@ -10,7 +10,12 @@ star_count <- 5
 page <- read_html(url)
 
 date <- html_nodes(page, ".review .meta-data .created-date") %>% html_attr('data-date') %>% as.Date()
-review <- html_nodes(page, ".review .rating-description") %>% html_text() %>% trimws()
+review <- html_nodes(page, ".review .rating-description") %>% 
+  html_text() %>% 
+  trimws() %>% 
+  tolower() %>% 
+  gsub('pluspunten', '', .) %>% 
+  gsub('verbeterpunten', '', .)
 
 reviewer <- html_nodes(page, '.review .meta-data .name-city') %>%
   html_text() %>%

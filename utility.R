@@ -23,3 +23,16 @@ createCleanCorpus <- function(content, language) {
 convert_counts <- function(x) {
   x <- ifelse(x > 0, 1, 0)
 }
+
+
+createWordCloud <- function(cloud_tdm) {
+  matrix <- as.matrix(cloud_tdm)
+  sorted_matrix <- sort(rowSums(matrix), decreasing = TRUE)
+  sorted_df <- data.frame(word = names(sorted_matrix), freq = sorted_matrix)
+  wordcloud2(
+    sorted_df,
+    color = "#F85D2F",
+    backgroundColor = "white",
+    rotateRatio = 0.5
+  )
+}
